@@ -1,28 +1,31 @@
-// let msg: "Hello" = "Hello"; // Фиксируем значение (Литерал)
+let msg: "Hello" = "Hello"; // Фиксируем значение (Литерал)
 
-// msg = "Hello World"; // Будет ошибка тк значение переменной фиксированное
+msg = "Hello"; // Передаём фиксированное значение
 
-// Переменные со значениями портов
-const port3000: number = 3000; // Фиксируем тип данных number
-const port3001: number = 3001;
+// Объект с конфигом сервера
+// Фиксируем Литералы для ключей
+const serverConfig: {
+    protocol: "http" | "https";
+    port: 3000 | 3001;
+} = {
+    protocol: "https",
+    port: 3001,
+};
 
-// Функция которая принимает аргументы protocol, port, со значениями "http" | "https" и 3000 | 3001 (Union-Типы)
-function startServer(
+// Функция принимает аннотацию типов для ключей protocol, port
+const startServer: (protocol: "http" | "https", port: 3000 | 3001) => string = (
+    // => Фиксируем тип данных string
     protocol: "http" | "https",
     port: 3000 | 3001
-    // Ниже фиксируем строку которая должна вернуться
-): "Server started" {
-    // Условие для проверки портов
-    if (port === port3000 || port === port3001) {
-        console.log(`Server started on ${protocol}://server:${port}`); // Если хотя бы один порт существует, выводим в консоль сообщения об успешном запуске сервера
-    } else {
-        console.error("Invalid port"); // Выводим ошибку
-    }
+): "Server started" => {
+    // Выше фиксируем Литерал (строку для возврата)
+    console.log(`Server started on ${protocol}://server:${port}`); // Выводим в консоль сообщения об успешном запуске сервера
 
     return "Server started"; // Возвращаем указанную строку
-}
+};
 
-startServer("https", 3001);
+// Вызов функции
+startServer(serverConfig.protocol, serverConfig.port);
 
 // type aliases (Псевдонимы типов)
 type AnimationTimingFunc = "ease" | "ease-out" | "ease-in"; // Литералы (значения для нашей CSS3 анимации)
