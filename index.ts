@@ -1,12 +1,51 @@
-let id: symbol = Symbol("id"); // Фиксируем тип данных symbol для глобальной переменной id
+// let msg: "Hello" = "Hello"; // Фиксируем значение (Литерал)
 
-const data = {
-    [id]: 1, // Присваиваем свойству id значение 1
-};
+// msg = "Hello World"; // Будет ошибка тк значение переменной фиксированное
 
-console.log(data[id]); // Выводим в консоль значение переменной data
+// Переменные со значениями портов
+const port3000: number = 3000; // Фиксируем тип данных number
+const port3001: number = 3001;
 
-const numOne: bigint = 1n; // Фиксируем тип данных bigint и присваиваем ей значение в 1n
-const numTwo: bigint = 2n;
+// Функция которая принимает аргументы protocol, port, со значениями "http" | "https" и 3000 | 3001 (Union-Типы)
+function startServer(
+    protocol: "http" | "https",
+    port: 3000 | 3001
+    // Ниже фиксируем строку которая должна вернуться
+): "Server started" {
+    // Условие для проверки портов
+    if (port === port3000 || port === port3001) {
+        console.log(`Server started on ${protocol}://server:${port}`); // Если хотя бы один порт существует, выводим в консоль сообщения об успешном запуске сервера
+    } else {
+        console.error("Invalid port"); // Выводим ошибку
+    }
 
-console.log(numOne + numTwo); // Выводим в консоль результат сложения двух переменных
+    return "Server started"; // Возвращаем указанную строку
+}
+
+startServer("https", 3001);
+
+// Функция которая принимает аргумент id типа string | number (Union-Типы)
+function createAnimation(
+    id: string | number, // Union-Типы
+    animName: string, // Фиксируем тип данных string
+
+    timingFunc: "ease" | "ease-out" | "ease-in" = "ease", // Union-Типы
+    // Перебираем все анимации, и в конечном итоге выводим фиксированное значение (Литерал) как дефолтное значение
+    duration: number,
+    iterCount: "infinite" | number // Union-Типы
+) {
+    // const elem = document.getElementById(`#${id}`) as HTMLElement; // Инициализируем переменную elem как ХТМЛ элемент
+    // Условие для проверки elem
+    // if (elem) {
+    console.log(`${animName} ${timingFunc} ${duration} ${iterCount}`); // Выводим анимацию в консоль
+    // Если элемент существует, применяем на нем анимации CSS3
+    // // elem.style.animation = `${animName} ${timingFunc} ${duration} ${iterCount}`;
+    // }
+}
+
+// Вызов функции со значениями анимации
+createAnimation("id", "fade", "ease", 3, "infinite");
+
+// tsc index.ts (команда в терминале для запуска компилятора ts кода)
+// tsc -help (команда в терминале для помощи с настройками)
+// ts-node index.ts (команда для запуска ноды + ts файл -- удобно для быстрого вывода в консоль)
