@@ -24,13 +24,17 @@ function startServer(
 
 startServer("https", 3001);
 
+// type aliases (Псевдонимы типов)
+type AnimationTimingFunc = "ease" | "ease-out" | "ease-in"; // Литералы (значения для нашей CSS3 анимации)
+type AnimationID = string | number; // Union-Типы
+
 // Функция которая принимает аргумент id типа string | number (Union-Типы)
 function createAnimation(
-    id: string | number, // Union-Типы
+    id: AnimationID, // Перебираем id анимации из типа псевдонимов
     animName: string, // Фиксируем тип данных string
 
-    timingFunc: "ease" | "ease-out" | "ease-in" = "ease", // Union-Типы
-    // Перебираем все анимации, и в конечном итоге выводим фиксированное значение (Литерал) как дефолтное значение
+    timingFunc: AnimationTimingFunc = "ease", // Union-Типы
+    // Перебираем все анимации из типа псевдонимов, и в конечном итоге выводим фиксированное значение (Литерал) как дефолтное значение
     duration: number,
     iterCount: "infinite" | number // Union-Типы
 ) {
