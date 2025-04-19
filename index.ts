@@ -2,14 +2,27 @@ let msg: "Hello" = "Hello"; // Фиксируем значение (Литера
 
 msg = "Hello"; // Передаём фиксированное значение
 
+// Объекты со свойствами литерального типа
+type Config = { protocol: "http" | "https"; port: 3000 | 3001 };
+type Role = {
+    role: string;
+};
+
+// Оператор пересечения & отвечает за объеденение двух литеральных типов в одном объекте
+type ConfigWithRole = Config & Role;
+
 // Объект с конфигом сервера
 // Фиксируем Литералы для ключей
-const serverConfig: {
-    protocol: "http" | "https";
-    port: 3000 | 3001;
-} = {
+const serverConfig: ConfigWithRole = {
     protocol: "https",
     port: 3001,
+    role: "admin",
+};
+
+const backupConfig: ConfigWithRole = {
+    protocol: "http",
+    port: 3000,
+    role: "admin",
 };
 
 // Функция принимает аннотацию типов для ключей protocol, port
