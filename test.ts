@@ -1,25 +1,25 @@
 // Объект с конфигом сервера
 // Фиксируем Литералы для ключей
 // Делаем аннотацию типа для строгой передачи данных
-const serverNewConfig: BasicConfig = {
+const serverNewIConfig: BasicIConfig = {
     protocol: "http",
     port: 3001,
 };
 
 // Делаем аннотацию типа для строгой передачи данных
-const backupConfig: BasicConfig = {
+const backupIConfig: BasicIConfig = {
     protocol: "http",
     port: 3000,
 };
 
 // Интерфейс для описания свойств
-interface BasicConfig {
+interface BasicIConfig {
     protocol: string;
     port: number;
 }
 
 // Передаем объект интерфейса со свойствами в виде аргумента
-const startNewServer = (config: BasicConfig): "Server started" => {
+const startNewIServer = (config: BasicIConfig): "Server started" => {
     // Выше фиксируем Литерал (строку для возврата)
     console.log(`Server started on ${config.protocol}://server:${config.port}`); // Выводим в консоль сообщения об успешном запуске сервера
 
@@ -27,5 +27,5 @@ const startNewServer = (config: BasicConfig): "Server started" => {
 };
 
 // Вызов функции
-startNewServer(serverNewConfig);
-startNewServer(backupConfig);
+startNewIServer(serverNewIConfig);
+startNewIServer(backupIConfig);
