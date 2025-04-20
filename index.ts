@@ -1,88 +1,96 @@
-let msg: "Hello" = "Hello"; // Фиксируем значение (Литерал)
+// Переменная Union-Типа
+type ValidAmount = "empty" | number;
 
-msg = "Hello"; // Передаём фиксированное значение
+// структура данных склада с одеждой
 
-// Объекты со свойствами литерального типа
-// type Config = { protocol: "http" | "https"; port: 3000 | 3001 };
 // Создаем интерфейс --- Префикс I - это Венгерская нотация (соглашение об именовании переменных, констант и прочих идентификаторов в коде программ.) ---
-
-interface IConfig {
-    protocol: "http" | "https";
-    port: 3000 | 3001;
-    log: (msg: string) => void;
+interface ClothesIWarehouse {
+    jackets: ValidAmount;
+    hats: ValidAmount;
+    socks: ValidAmount;
+    pants: ValidAmount;
 }
 
-// type Role = {
-//     role: string;
-// };
+// структура данных склада с канцтоварами
 
-// // Оператор пересечения & отвечает за объеденение двух литеральных типов в одном объекте
-// type ConfigWithRole = Config & Role;
-
-interface IRole {
-    role: string;
+interface StationeryIWarehouse {
+    scissors: ValidAmount;
+    paper: "empty" | boolean;
 }
 
-interface IConfig {
+// структура данных склада с бытовой техникой
+
+interface AppliancesIWarehouse {
+    dishwashers: ValidAmount;
+    cookers: ValidAmount;
+    mixers: ValidAmount;
+}
+
+// общая структура данных, наследует все данные из трех выше
+// + добавляет свои
+
+interface TotalIWarehouse
+    extends ClothesIWarehouse,
+        StationeryIWarehouse,
+        AppliancesIWarehouse {
+    deficit: boolean;
     date: Date;
 }
 
-// Создаем новый интерфейс ConfigWithRole который наследует свойства из Config, Role
-interface IConfigWithRole extends IConfig, IRole {}
+// главный объект со всеми данными, должен подходить под формат TotalWarehouse
 
-// Объект с конфигом сервера
-// Фиксируем Литералы для ключей
-const serverIConfig: IConfigWithRole = {
-    protocol: "https",
-    port: 3001,
-    role: "admin",
-    log: (msg: string): void => console.log(msg),
+// Принимаем TotalWareHouse в виде аннотации
+const totalData: TotalIWarehouse = {
+    jackets: 5,
+    hats: "empty",
+    socks: "empty",
+    pants: 15,
+    scissors: 15,
+    paper: true,
+    dishwashers: 3,
+    cookers: "empty",
+    mixers: 14,
+    deficit: true,
     date: new Date(),
 };
 
-// const backupConfig: ConfigWithRole = {
-//     protocol: "http",
-//     port: 3000,
-//     role: "admin",
-// };
+// Реализуйте функцию, которая принимает в себя главный объект totalData нужного формата
+// и возвращает всегда строку
+// Функция должна отфильтровать данные из объекта и оставить только те названия товаров, у которых значение "empty"
+// и поместить их в эту строку. Если таких товаров нет - возвращается другая строка (см ниже)
 
-// Аннотация функции с литералами
-type StartIFunction = (
-    protocol: "http" | "https",
-    port: 3000 | 3001,
-    log: (msg: string) => void // Говорим что свойство log не возвращает ничего
-) => string;
+// С данным объектом totalData строка будет выглядеть:
+// "We need this items: hats, socks, cookers"
+// Товары через запятую, в конце её не должно быть. Пробел после двоеточия, в конце строки его нет.
 
-// Функция принимает аннотацию типов для ключей protocol, port
-const startIServer: StartIFunction = (
-    // => Фиксируем тип данных string
-    protocol: "http" | "https",
-    port: 3000 | 3001,
-    log: (msg: string) => void // Новый аргумент
-): "Server started" => {
-    // Выше фиксируем Литерал (строку для возврата)
-    log(`Server started on ${protocol}://server:${port}`); // Выводим в консоль сообщения об успешном запуске сервера
+function printReport(data: TotalIWarehouse): string {
+    // 1. Получаем пары [ключ, значение] из ПЕРЕДАННОГО объекта 'data'
+    const entries = Object.entries(data);
 
-    return "Server started"; // Возвращаем указанную строку
-};
+    // 2. Фильтруем, оставляя только те, где значение === "empty"
+    const emptyEntries = entries.filter(([key, value]) => value === "empty");
 
-// Вызов функции
-startIServer(serverIConfig.protocol, serverIConfig.port, serverIConfig.log);
+    // Пример [ "hats: empty", "socks: empty" и тд ]
 
-// Индексные свойства
+    // 3. Извлекаем только ключи (названия товаров)
+    const emptyItemNames = emptyEntries.map(([key, value]) => key); // Пример emptyItemNames: [ 'hats', 'socks', 'cookers' ]
 
-interface IStyles {
-    // Описываем свойства
-    [key: string]: string; // Фиксируем тип данных string
+    // 4. Проверяем, есть ли такие товары
+    if (emptyItemNames.length === 0) {
+        // Если массив пуст - все хорошо
+        return "Everything fine";
+    } else {
+        // Если массив не пуст - формируем строку
+        const itemString = emptyItemNames.join(", ");
+        return `We need this items: ${itemString}`;
+    }
 }
 
-// Переменная со стиля (для примера)
-// Передаем интерфейс Styles (для передачи свойств)
-const styles: IStyles = {
-    position: "absolute",
-    top: "20px",
-    left: "50px",
-};
+// Вывод в консоль
+console.log(printReport(totalData));
+// Пример: We need this items: hats, socks, cookers
+
+// --- ЗАДАЧА ВЫПОЛНЕНА ---
 
 // tsc index.ts (команда в терминале для запуска компилятора ts кода)
 // tsc -help (команда в терминале для помощи с настройками)
