@@ -1,96 +1,68 @@
-// Переменная Union-Типа
-type ValidAmount = "empty" | number;
+// Глобальная переменная типа unknown
+let smth: unknown;
 
-// структура данных склада с одеждой
+smth = "str";
 
-// Создаем интерфейс --- Префикс I - это Венгерская нотация (соглашение об именовании переменных, констант и прочих идентификаторов в коде программ.) ---
-interface ClothesIWarehouse {
-    jackets: ValidAmount;
-    hats: ValidAmount;
-    socks: ValidAmount;
-    pants: ValidAmount;
-}
+/* let data: string[] = smth;
+data.find((e) => e); */ // будет ошибка тк тип переменной неопределен (unknown)
 
-// структура данных склада с канцтоварами
+// const someValue: unknown = 10;
+// someValue.method();
 
-interface StationeryIWarehouse {
-    scissors: ValidAmount;
-    paper: "empty" | boolean;
-}
-
-// структура данных склада с бытовой техникой
-
-interface AppliancesIWarehouse {
-    dishwashers: ValidAmount;
-    cookers: ValidAmount;
-    mixers: ValidAmount;
-}
-
-// общая структура данных, наследует все данные из трех выше
-// + добавляет свои
-
-interface TotalIWarehouse
-    extends ClothesIWarehouse,
-        StationeryIWarehouse,
-        AppliancesIWarehouse {
-    deficit: boolean;
-    date: Date;
-}
-
-// главный объект со всеми данными, должен подходить под формат TotalWarehouse
-
-// Принимаем TotalWareHouse в виде аннотации
-const totalData: TotalIWarehouse = {
-    jackets: 5,
-    hats: "empty",
-    socks: "empty",
-    pants: 15,
-    scissors: 15,
-    paper: true,
-    dishwashers: 3,
-    cookers: "empty",
-    mixers: 14,
-    deficit: true,
-    date: new Date(),
-};
-
-// Реализуйте функцию, которая принимает в себя главный объект totalData нужного формата
-// и возвращает всегда строку
-// Функция должна отфильтровать данные из объекта и оставить только те названия товаров, у которых значение "empty"
-// и поместить их в эту строку. Если таких товаров нет - возвращается другая строка (см ниже)
-
-// С данным объектом totalData строка будет выглядеть:
-// "We need this items: hats, socks, cookers"
-// Товары через запятую, в конце её не должно быть. Пробел после двоеточия, в конце строки его нет.
-
-function printReport(data: TotalIWarehouse): string {
-    // 1. Получаем пары [ключ, значение] из ПЕРЕДАННОГО объекта 'data'
-    const entries = Object.entries(data);
-
-    // 2. Фильтруем, оставляя только те, где значение === "empty"
-    const emptyEntries = entries.filter(([key, value]) => value === "empty");
-
-    // Пример [ "hats: empty", "socks: empty" и тд ]
-
-    // 3. Извлекаем только ключи (названия товаров)
-    const emptyItemNames = emptyEntries.map(([key, value]) => key); // Пример emptyItemNames: [ 'hats', 'socks', 'cookers' ]
-
-    // 4. Проверяем, есть ли такие товары
-    if (emptyItemNames.length === 0) {
-        // Если массив пуст - все хорошо
-        return "Everything fine";
-    } else {
-        // Если массив не пуст - формируем строку
-        const itemString = emptyItemNames.join(", ");
-        return `We need this items: ${itemString}`;
+function fetchData(data: unknown): void {
+    // Сужаем типы для примерного понимания с каким типом нужно работать
+    // Условие для проверки типа
+    if (typeof data === "string") {
+        console.log(data.toLowerCase); // Если строка вызываем метод toLowerCase()
     }
 }
 
-// Вывод в консоль
-console.log(printReport(totalData));
-// Пример: We need this items: hats, socks, cookers
+// JSON объект
+const userData =
+    '{"isBirthdayData": true, "ageData:": 40, "userNameData": "John"}';
 
-// --- ЗАДАЧА ВЫПОЛНЕНА ---
+function safeParse(s: string): unknown {
+    return JSON.parse(s);
+}
+
+const data = safeParse(userData);
+
+// Функция для распарса JSON объекта userData
+function transferData(d: unknown): void {
+    // Проверяем тип данных строк
+    if (typeof d === "string") {
+        console.log(d.toLowerCase());
+    } else if (typeof d === "object" && d) {
+        console.log(data);
+    } else {
+        console.error("Some Error");
+    }
+}
+
+// Вызов функции
+transferData(data);
+
+/* try {
+    if (1) {
+        // Выбрасываем ошибку
+        throw new Error("error");
+    }
+} catch (e) {
+    // Сужаем типы с помощью instanceof
+    if (e instanceof Error) {
+        console.log(e.message);
+    } else if (typeof e === "string") {
+        console.log(e);
+    }
+} */
+
+// Union Типы |
+type T0 = any | unknown; // any перекрывает unknown
+type T1 = number | unknown; // unknown перекрывает number
+
+// Типы пересечения &
+type T2 = any & unknown; // any перекрывает unknown
+type T3 = number & unknown; // number перекрывает unknown
 
 // tsc index.ts (команда в терминале для запуска компилятора ts кода)
 // tsc -help (команда в терминале для помощи с настройками)
